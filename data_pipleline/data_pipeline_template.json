@@ -1,0 +1,62 @@
+{
+  
+  "objects": [
+    {
+      "subnetId": "subnet-$NEED_TO_UPDATE_THIS_WITH_YOURS",
+      "schedule": {
+        "ref": "DefaultSchedule"
+      },
+      "resourceRole": "$NEED_TO_UPDATE_THIS_WITH_YOURS",
+      "role": "DataPipelineDefaultRole",
+      "securityGroupIds": "sg-$NEED_TO_UPDATE_THIS_WITH_YOURS,
+      "name": "EC2 Resource",
+      "id": "ResourceId_HOj7b",
+      "type": "Ec2Resource",
+      "region": "us-east-1"
+    },
+    {
+      "failureAndRerunMode": "CASCADE",
+      "schedule": {
+        "ref": "DefaultSchedule"
+      },
+      "resourceRole": "DataPipelineDefaultResourceRole",
+      "role": "DataPipelineDefaultRole",
+      "pipelineLogUri": "s3://$NEED_TO_UPDATE_THIS_WITH_YOURS/",
+      "scheduleType": "cron",
+      "name": "Default",
+      "id": "Default"
+    },
+    {
+      "connectionString": "jdbc:redshift://$NEED_TO_UPDATE_THIS_WITH_YOURS",
+      "databaseName": "$NEED_TO_UPDATE_THIS_WITH_YOURS",
+      "*password": "$NEED_TO_UPDATE_THIS_WITH_YOURS",
+      "name": "Redshift Database Connection",
+      "id": "$NEED_TO_UPDATE_THIS_WITH_YOURS",
+      "type": "RedshiftDatabase",
+      "username": "$NEED_TO_UPDATE_THIS_WITH_YOURS"
+    },
+    {
+      "period": "1 months",
+      "name": "Every 1 month",
+      "id": "DefaultSchedule",
+      "type": "Schedule",
+      "startAt": "FIRST_ACTIVATION_DATE_TIME"
+    },
+    {
+      "schedule": {
+        "ref": "DefaultSchedule"
+      },
+      "database": {
+        "ref": "RedshiftDatabaseId_TLw5T"
+      },
+      "scriptUri": "s3://$NEED_TO_UPDATE_THIS_WITH_YOURS/some_query.sql",
+      "name": "Sql Job / Activity ",
+      "runsOn": {
+        "ref": "ResourceId_HOj7b"
+      },
+      "id": "SqlActivityId_MuZ71",
+      "type": "SqlActivity"
+    }
+  ],
+  "parameters": []
+}
