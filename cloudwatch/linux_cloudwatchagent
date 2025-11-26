@@ -1,0 +1,65 @@
+# step 1
+sudo yum install amazon-cloudwatch-agent -y 
+# or 
+sudo yum install -y https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
+
+# Send a test metric to CloudWatch
+
+
+
+### step 2
+
+sudo tee /opt/aws/amazon-cloudwatch-agent/bin/config.json > /dev/null << 'EOF'
+{
+  "agent": {
+    "metrics_collection_interval": 60,
+    "run_as_user": "root"
+  },
+  "metrics": {
+    "aggregation_dimensions": [
+      ["InstanceId"], 
+      ["InstanceId", "device"], 
+      ["InstanceId", "device", "fstype"], 
+      ["InstanceId", "path"]
+    ],
+    "append_dimensions": {
+      "AutoScalingGroupName": "${aws:AutoScalingGroupName}",
+      "ImageId": "${aws:ImageId}",
+      "InstanceId": "${aws:InstanceId}",
+      "InstanceType": "${aws:InstanceType}"
+    },
+    "metrics_collected": {
+      "cpu": {
+        "measurement": ["cpu_usage_idle", "cpu_usage_iowait", "cpu_usage_user", "cpu_usage_system"],
+        "metrics_collection_interval": 60,
+        "resources": ["*"]
+      },
+      "disk": {
+        "measurement": ["used_percent"],
+        "metrics_collection_interval": 60,
+        "resources": ["/"],
+
+        "drop_device": false
+      }      ,
+      "mem": {
+        "measurement": ["mem_used_percent"],
+        "metrics_collection_interval": 60
+      }
+    }
+  }
+}
+EOF
+
+
+#step 3
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -s -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
+
+#step 4
+sudo systemctl restart amazon-cloudwatch-agent
+sudo systemctl status amazon-cloudwatch-agent
+sudo systemctl enable amazon-cloudwatch-agent
+
+#step 5
+if getting error, go to the ec2 role and add cloudwatchagent policy to the role
+
+less /opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log
