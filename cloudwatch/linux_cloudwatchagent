@@ -57,6 +57,10 @@ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-c
 #step 4
 sudo systemctl restart amazon-cloudwatch-agent
 sudo systemctl status amazon-cloudwatch-agent
+
+#note:
+if you get any error add to ec2 profile
+CloudWatchAgentServerPolicy
 sudo systemctl enable amazon-cloudwatch-agent
 
 #step 5
